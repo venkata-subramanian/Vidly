@@ -11,7 +11,7 @@ namespace Vidly.Models
         public byte Id { get; set; }
         [Required]
         [StringLength(255)]
-        public String MembershipName { get; set; }
+        public string MembershipName { get; set; }
         public short SignupFee { get; set; }
         public byte DurationInMonths { get; set; }
         public byte DiscountRate { get; set; }
