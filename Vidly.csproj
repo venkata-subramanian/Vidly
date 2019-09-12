@@ -48,6 +48,9 @@
     <Reference Include="AutoMapper, Version=4.1.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>packages\AutoMapper.4.1.0\lib\net45\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="Elmah, Version=1.2.14706.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -184,14 +187,17 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\Api\CustomerAPIController.cs" />
     <Compile Include="Controllers\Api\MovieAPIController.cs" />
+    <Compile Include="Controllers\Api\NewRentalsController.cs" />
     <Compile Include="Controllers\CustomersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MoviesController.cs" />
+    <Compile Include="Controllers\RentalsController.cs" />
     <Compile Include="DTO\CustomerDTO.cs" />
     <Compile Include="DTO\GenreDTO.cs" />
     <Compile Include="DTO\MembershipTypeDTO.cs" />
     <Compile Include="DTO\MovieDTO.cs" />
+    <Compile Include="DTO\NewRentalsDTO.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -243,6 +249,18 @@
     <Compile Include="Migrations\201908251908549_AdditionalPhoneNumberRemovedFromIdentityModel.Designer.cs">
       <DependentUpon>201908251908549_AdditionalPhoneNumberRemovedFromIdentityModel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909091744460_AddingRentalsTable.cs" />
+    <Compile Include="Migrations\201909091744460_AddingRentalsTable.Designer.cs">
+      <DependentUpon>201909091744460_AddingRentalsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909091747198_MarkingRequiredOnRentalsTable.cs" />
+    <Compile Include="Migrations\201909091747198_MarkingRequiredOnRentalsTable.Designer.cs">
+      <DependentUpon>201909091747198_MarkingRequiredOnRentalsTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201909111734524_ResolvingConflicts.cs" />
+    <Compile Include="Migrations\201909111734524_ResolvingConflicts.Designer.cs">
+      <DependentUpon>201909111734524_ResolvingConflicts.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Customers.cs" />
@@ -252,6 +270,7 @@
     <Compile Include="Models\MembershipType.cs" />
     <Compile Include="Models\Min18IfAMember.cs" />
     <Compile Include="Models\Movies.cs" />
+    <Compile Include="Models\Rentals.cs" />
     <Compile Include="Models\RoleName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -261,6 +280,8 @@
     <Compile Include="ViewModels\CustomerFormViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="404.html" />
+    <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Content\bootstrap-lumen.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -373,16 +394,23 @@
     <Content Include="Content\DataTables\images\sort_desc.png" />
     <Content Include="Content\DataTables\images\sort_desc_disabled.png" />
     <Content Include="Content\DataTables\swf\flashExport.swf" />
+    <Content Include="Content\toastr.css" />
+    <Content Include="Content\toastr.min.css" />
+    <Content Include="Content\typeahead.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\bloodhound.js" />
+    <Content Include="Scripts\bloodhound.min.js" />
     <Content Include="Scripts\bootbox.js" />
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Content\DataTables\css\mixins.scss" />
     <Content Include="Content\DataTables\css\common.scss" />
+    <Content Include="Content\toastr.scss" />
+    <Content Include="Content\toastr.less" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.js" />
     <Content Include="Scripts\DataTables\autoFill.bootstrap.min.js" />
@@ -458,6 +486,12 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\toastr.js" />
+    <Content Include="Scripts\toastr.min.js" />
+    <Content Include="Scripts\typeahead.bundle.js" />
+    <Content Include="Scripts\typeahead.bundle.min.js" />
+    <Content Include="Scripts\typeahead.jquery.js" />
+    <Content Include="Scripts\typeahead.jquery.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -499,6 +533,7 @@
     <Content Include="Views\Customers\CustomerForm.cshtml" />
     <Content Include="Views\Movies\MovieForm.cshtml" />
     <Content Include="Views\Movies\ReadonlyMoviesList.cshtml" />
+    <Content Include="Views\Rentals\NewRental.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -552,6 +587,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201908251908549_AdditionalPhoneNumberRemovedFromIdentityModel.resx">
       <DependentUpon>201908251908549_AdditionalPhoneNumberRemovedFromIdentityModel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909091744460_AddingRentalsTable.resx">
+      <DependentUpon>201909091744460_AddingRentalsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909091747198_MarkingRequiredOnRentalsTable.resx">
+      <DependentUpon>201909091747198_MarkingRequiredOnRentalsTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909111734524_ResolvingConflicts.resx">
+      <DependentUpon>201909111734524_ResolvingConflicts.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

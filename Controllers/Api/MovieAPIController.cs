@@ -25,6 +25,7 @@ namespace Vidly.Controllers.Api
         {
             var moviesDTO = _context.Movies
                                .Include(g => g.Genre)
+                               .Where(m => m.NumberAvailable > 0)
                                .ToList()
                                .Select(Mapper.Map<Movies, MovieDTO>);
 
